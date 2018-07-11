@@ -34,7 +34,6 @@ else:
 with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
-print(find_packages('src'))
 setup(
     name="abi.tools.uigenerator",
     version=version,
@@ -53,7 +52,7 @@ setup(
     },
     license="",
     keywords="abi user interface generator",
-    url="http://",
+    url="https://github.com/ABI-Software/abi.tools.uigenerator",
     download_url="",
     classifiers=[
         "Development Status :: 3 - Alpha",
