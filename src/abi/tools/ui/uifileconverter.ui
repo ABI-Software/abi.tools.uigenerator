@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="ui_frame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -34,12 +34,48 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="uiFile_comboBox"/>
+       <widget class="QComboBox" name="uiFile_comboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="uiFile_pushButton">
         <property name="text">
          <string>Generate</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="sideBySide_groupBox">
+     <property name="title">
+      <string>side-by-side output</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="outDir_label">
+        <property name="text">
+         <string>Output directory:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="outDir_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="outDir_pushButton">
+        <property name="text">
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -80,7 +116,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QFrame" name="frame_2">
+    <widget class="QFrame" name="quit_frame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -122,7 +158,7 @@
    <sender>quit_pushButton</sender>
    <signal>clicked()</signal>
    <receiver>UIFileConverterDialog</receiver>
-   <slot>accept()</slot>
+   <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>206</x>
