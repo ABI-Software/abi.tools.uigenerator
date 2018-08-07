@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src\abi\tools\ui\uifileconverter.ui'
 #
-# Created: Thu Jul 12 16:57:36 2018
+# Created: Thu Aug  2 12:42:09 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,6 +13,9 @@ class Ui_UIFileConverterDialog(object):
     def setupUi(self, UIFileConverterDialog):
         UIFileConverterDialog.setObjectName("UIFileConverterDialog")
         UIFileConverterDialog.resize(561, 392)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/images/ABILogo_Colour.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        UIFileConverterDialog.setWindowIcon(icon)
         self.verticalLayout = QtGui.QVBoxLayout(UIFileConverterDialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.ui_frame = QtGui.QFrame(UIFileConverterDialog)
@@ -52,6 +55,17 @@ class Ui_UIFileConverterDialog(object):
         self.outDir_pushButton.setObjectName("outDir_pushButton")
         self.horizontalLayout_3.addWidget(self.outDir_pushButton)
         self.verticalLayout.addWidget(self.sideBySide_groupBox)
+        self.patchResourcesImport_groupBox = QtGui.QGroupBox(UIFileConverterDialog)
+        self.patchResourcesImport_groupBox.setObjectName("patchResourcesImport_groupBox")
+        self.formLayout = QtGui.QFormLayout(self.patchResourcesImport_groupBox)
+        self.formLayout.setObjectName("formLayout")
+        self.repairString_label = QtGui.QLabel(self.patchResourcesImport_groupBox)
+        self.repairString_label.setObjectName("repairString_label")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.repairString_label)
+        self.repairString_lineEdit = QtGui.QLineEdit(self.patchResourcesImport_groupBox)
+        self.repairString_lineEdit.setObjectName("repairString_lineEdit")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.repairString_lineEdit)
+        self.verticalLayout.addWidget(self.patchResourcesImport_groupBox)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.screen_label = QtGui.QLabel(UIFileConverterDialog)
@@ -67,6 +81,13 @@ class Ui_UIFileConverterDialog(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.quit_frame)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.settings_pushButton = QtGui.QPushButton(self.quit_frame)
+        self.settings_pushButton.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/icons/images/settings_grey_48x48.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.settings_pushButton.setIcon(icon1)
+        self.settings_pushButton.setObjectName("settings_pushButton")
+        self.horizontalLayout_2.addWidget(self.settings_pushButton)
         spacerItem2 = QtGui.QSpacerItem(457, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem2)
         self.quit_pushButton = QtGui.QPushButton(self.quit_frame)
@@ -85,5 +106,9 @@ class Ui_UIFileConverterDialog(object):
         self.sideBySide_groupBox.setTitle(QtGui.QApplication.translate("UIFileConverterDialog", "side-by-side output", None, QtGui.QApplication.UnicodeUTF8))
         self.outDir_label.setText(QtGui.QApplication.translate("UIFileConverterDialog", "Output directory:", None, QtGui.QApplication.UnicodeUTF8))
         self.outDir_pushButton.setText(QtGui.QApplication.translate("UIFileConverterDialog", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.patchResourcesImport_groupBox.setTitle(QtGui.QApplication.translate("UIFileConverterDialog", "Patch resources import", None, QtGui.QApplication.UnicodeUTF8))
+        self.repairString_label.setText(QtGui.QApplication.translate("UIFileConverterDialog", "Repair string:", None, QtGui.QApplication.UnicodeUTF8))
+        self.repairString_lineEdit.setPlaceholderText(QtGui.QApplication.translate("UIFileConverterDialog", "Leave empty if the resource import does not need patching", None, QtGui.QApplication.UnicodeUTF8))
         self.quit_pushButton.setText(QtGui.QApplication.translate("UIFileConverterDialog", "Quit", None, QtGui.QApplication.UnicodeUTF8))
 
+from . import resources_rc

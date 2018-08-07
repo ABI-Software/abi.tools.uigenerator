@@ -1,11 +1,12 @@
 
-__version__ = '0.2.0'
-
 import os
 import sys
-import argparse
 import fnmatch
 import platform
+import xml.etree.ElementTree as ET
+
+from abi.tools.generatecommon import ORGANISATION, ORGANISATION_DOMAIN, SrcDirSettings, setup_application, \
+    parse_arguments, GenerateCommon
 
 try:
     from PySide import QtGui
@@ -19,62 +20,12 @@ except ImportError:
     from abi.tools.ui.ui2_uifileconverter import Ui_UIFileConverterDialog
 
 
-ORGANISATION = 'abi'
-ORGANISATION_DOMAIN = 'abi.auckland.ac.nz'
-
-
-class SrcDirSettings(object):
-
-    def __init__(self, src_dir):
-        self._src_dir = src_dir
-        self._side_by_side_output = True
-        self._out_dir = ''
-        self._current_index = 0
-
-    def get_src_dir(self):
-        return self._src_dir
-
-    def is_side_by_side_output(self):
-        return self._side_by_side_output
-
-    def set_side_by_side_output(self, value=True):
-        self._side_by_side_output = value
-
-    def get_current_index(self):
-        return self._current_index
-
-    def set_current_index(self, value):
-        self._current_index = value
-
-    def get_out_dir(self):
-        return self._out_dir
-
-    def set_out_dir(self, value):
-        self._out_dir = value
-
-    def load(self, settings):
-        settings.beginGroup(self._src_dir)
-        self.set_current_index(int(settings.value('current_index', '0')))
-        self.set_out_dir(settings.value('out_dir', ''))
-        self.set_side_by_side_output(settings.value('side_by_side', 'true') == 'true')
-        settings.endGroup()
-
-    def save(self, settings):
-        settings.beginGroup(self._src_dir)
-        settings.setValue('current_index', self.get_current_index())
-        settings.setValue('out_dir', self.get_out_dir())
-        settings.setValue('side_by_side', self.is_side_by_side_output())
-        settings.endGroup()
-
-
-class UiFileConverterDialog(QtGui.QDialog):
+class UiFileConverterDialog(GenerateCommon):
 
     def __init__(self, src_root_dir):
         super(UiFileConverterDialog, self).__init__()
         self._ui = Ui_UIFileConverterDialog()
         self._ui.setupUi(self)
-
-        self._src_dir_settings = SrcDirSettings(src_root_dir)
 
         if platform.system() == 'Darwin':
             organisation_string = ORGANISATION_DOMAIN
@@ -83,47 +34,63 @@ class UiFileConverterDialog(QtGui.QDialog):
         self._settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
                                           organisation_string, 'uigenerator')
         self._settings.setFallbacksEnabled(False)
-        self._load_settings()
 
-        self._update_ui()
         self._make_connections()
 
-    def closeEvent(self, event):
-        self._save_settings()
-        event.accept()
+        self._src_dir_settings = SrcDirSettings(src_root_dir)
+        self._load_settings()
 
-    def _load_settings(self):
-        self.resize(self._settings.value('size', QtCore.QSize(270, 225)))
-        self.move(self._settings.value('pos', QtCore.QPoint(50, 50)))
+        self._setup_ui()
+        self._update_ui()
+
+    def _setup_ui(self):
         self._src_dir_settings.load(self._settings)
-
-    def _save_settings(self):
-        self._settings.setValue('size', self.size())
-        self._settings.setValue('pos', self.pos())
-        self._src_dir_settings.save(self._settings)
-
-    def _update_ui(self):
         src_dir = self._src_dir_settings.get_src_dir()
         files = find_ui_files(src_dir)
-        self._ui.uiFile_comboBox.addItems([os.path.relpath(name, src_dir) for name in files])
-        self._ui.uiFile_comboBox.setCurrentIndex(self._src_dir_settings.get_current_index())
+        relative_file_names = [os.path.relpath(name, src_dir) for name in files]
+        self._src_dir_settings.add_file_listings(relative_file_names)
+        self._ui.uiFile_comboBox.blockSignals(True)
+        self._ui.uiFile_comboBox.addItems(relative_file_names)
+        self._ui.uiFile_comboBox.blockSignals(False)
+
+    def _update_ui(self):
+        current_file_name = self._src_dir_settings.get_current_file()
+        if self._ui.uiFile_comboBox.currentText() != current_file_name:
+            index_of_current_file = self._ui.uiFile_comboBox.findText(current_file_name)
+            self._ui.uiFile_comboBox.setCurrentIndex(index_of_current_file)
         self._ui.uiFile_pushButton.setEnabled(self._ui.uiFile_comboBox.count() > 0)
         side_by_side = self._src_dir_settings.is_side_by_side_output()
         self._ui.sideBySide_groupBox.setChecked(side_by_side)
-        self._side_by_side_changed(side_by_side)
+        self._update_side_by_side(side_by_side)
         self._ui.outDir_lineEdit.setText(self._src_dir_settings.get_out_dir())
+        self._update_patch_resources_import()
 
-    def _make_connections(self):
-        self._ui.uiFile_pushButton.clicked.connect(self._convert)
-        self._ui.uiFile_comboBox.currentIndexChanged.connect(self._src_dir_settings.set_current_index)
-        self._ui.sideBySide_groupBox.toggled.connect(self._side_by_side_changed)
-        self._ui.outDir_pushButton.clicked.connect(self._choose_output_directory)
+    def _update_patch_resources_import(self):
+        self._ui.patchResourcesImport_groupBox.setEnabled(_includes_resources(self._ui.uiFile_comboBox.currentText()))
+        repair_resource_string = self._src_dir_settings.get_repair_resource_string()
+        self._ui.repairString_lineEdit.setText(repair_resource_string)
 
-    def _side_by_side_changed(self, state):
+    def _update_side_by_side(self, state):
         self._ui.outDir_lineEdit.setEnabled(not state)
         self._ui.outDir_pushButton.setEnabled(not state)
         self._ui.outDir_label.setEnabled(not state)
         self._src_dir_settings.set_side_by_side_output(state)
+
+    def _ui_file_changed(self, current_index):
+        text = self._ui.uiFile_comboBox.currentText()
+        self._src_dir_settings.set_current_file(text)
+        self._update_ui()
+
+    def _repair_string_changed(self, new_text):
+        self._src_dir_settings.set_repair_resource_string(new_text)
+
+    def _make_connections(self):
+        super(UiFileConverterDialog, self)._make_connections()
+        self._ui.uiFile_pushButton.clicked.connect(self._convert)
+        self._ui.uiFile_comboBox.currentIndexChanged.connect(self._ui_file_changed)
+        self._ui.sideBySide_groupBox.toggled.connect(self._update_side_by_side)
+        self._ui.repairString_lineEdit.textChanged.connect(self._repair_string_changed)
+        self._ui.outDir_pushButton.clicked.connect(self._choose_output_directory)
 
     def _choose_output_directory(self):
         selected_directory = QtGui.QFileDialog.getExistingDirectory()
@@ -152,7 +119,31 @@ class UiFileConverterDialog(QtGui.QDialog):
                                    % (abs_path_to_ui_file, abs_path_to_out_file)
                 self._ui.screen_label.setText(pre_compile_text)
                 compileUi(f, g, from_imports=True)
-                self._ui.screen_label.setText(pre_compile_text + '\n\nCompiled.')
+                self._ui.screen_label.setText(pre_compile_text + '\n\nSuccess.')
+
+        repair_resource_string = self._src_dir_settings.get_repair_resource_string()
+
+        if repair_resource_string:
+            with open(abs_path_to_out_file, 'r') as f:
+                content = f.read()
+
+            modified_content = content.replace('from . import resources_rc', repair_resource_string)
+
+            with open(abs_path_to_out_file, 'w') as f:
+                f.write(modified_content)
+
+
+def _includes_resources(file_name):
+    tree = ET.parse(file_name)
+    element = tree.find('resources')
+    if element is None:
+        return False
+
+    for sub_element in element:
+        if 'location' in sub_element.attrib:
+            return sub_element.attrib['location'].endswith('.qrc')
+
+    return False
 
 
 def find_ui_files(search_dir):
@@ -168,16 +159,8 @@ def main():
 
     app = QtGui.QApplication(sys.argv)
 
-    app.setOrganizationName('ABI')
-    app.setOrganizationDomain('abi.auckland.ac.nz')
-    app.setApplicationName('uigenerator')
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("src_dir", nargs='?', default=os.getcwd(),
-                        help="the directory to search (recursively) for ui files.")
-    parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s {version}'.format(version=__version__))
-    args = parser.parse_args()
+    setup_application(app, 'uigenerator')
+    args = parse_arguments()
 
     src_root_dir = os.path.realpath(args.src_dir)
     os.chdir(src_root_dir)

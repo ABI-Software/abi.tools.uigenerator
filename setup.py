@@ -12,7 +12,7 @@ def read(fname):
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'src', 'abi', 'tools', 'generateuserinterface.py')) as fd:
+with open(os.path.join(here, 'src', 'abi', 'tools', 'generatecommon.py')) as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 

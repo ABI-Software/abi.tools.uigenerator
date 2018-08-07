@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>images/settings_grey_48x48.png</file>
+    <file>images/ABILogo_Colour.png</file>
+  </qresource>
+</RCC>
