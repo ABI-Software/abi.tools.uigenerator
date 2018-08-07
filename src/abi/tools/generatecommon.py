@@ -16,7 +16,7 @@ ORGANISATION = 'abi'
 ORGANISATION_DOMAIN = 'abi.auckland.ac.nz'
 
 
-class GenerateCommon(QtGui.QDialog):
+class GenerateCommon(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         self._save_settings()

@@ -12,20 +12,21 @@ try:
     from PySide import QtGui
     from PySide import QtCore
     from pysideuic import compileUi
-    from abi.tools.ui.ui_uifileconverter import Ui_UIFileConverterDialog
+    from abi.tools.ui.ui_uifileconverter import Ui_UiFileConverter
 except ImportError:
     from PySide2 import QtCore
     from PySide2 import QtWidgets as QtGui
     from pyside2uic import compileUi
-    from abi.tools.ui.ui2_uifileconverter import Ui_UIFileConverterDialog
+    from abi.tools.ui.ui2_uifileconverter import Ui_UiFileConverter
 
 
 class UiFileConverterDialog(GenerateCommon):
 
     def __init__(self, src_root_dir):
         super(UiFileConverterDialog, self).__init__()
-        self._ui = Ui_UIFileConverterDialog()
+        self._ui = Ui_UiFileConverter()
         self._ui.setupUi(self)
+        self.setStatusBar(None)
 
         if platform.system() == 'Darwin':
             organisation_string = ORGANISATION_DOMAIN
