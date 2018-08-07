@@ -40,6 +40,14 @@ class GenerateCommon(QtGui.QMainWindow):
 
     def _populate_recent_list(self):
         known_locations = self._settings.childGroups()
+        for known_location in known_locations:
+            recent_action = QtGui.QAction(known_location, self, triggered=self._open_previous_location)
+            self._ui.menuOpen_previous.addAction(recent_action)
+
+    def _open_previous_location(self):
+        action = self.sender()
+        if action:
+            self._initialise_new_src_dir(action.text())
 
     def _open_location(self):
         location = QtGui.QFileDialog.getExistingDirectory(self, 'Select source directory', self._previous_location)

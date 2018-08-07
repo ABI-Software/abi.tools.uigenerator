@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src\abi\tools\ui\uifileconverter.ui'
 #
-# Created: Tue Aug  7 14:59:04 2018
+# Created: Tue Aug  7 16:01:58 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,6 +13,9 @@ class Ui_UiFileConverter(object):
     def setupUi(self, UiFileConverter):
         UiFileConverter.setObjectName("UiFileConverter")
         UiFileConverter.resize(816, 579)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/images/ABILogo_Colour.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        UiFileConverter.setWindowIcon(icon)
         self.centralwidget = QtGui.QWidget(UiFileConverter)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -95,8 +98,8 @@ class Ui_UiFileConverter(object):
         self.menubar.setObjectName("menubar")
         self.menu_File = QtGui.QMenu(self.menubar)
         self.menu_File.setObjectName("menu_File")
-        self.menuOpen_recent = QtGui.QMenu(self.menu_File)
-        self.menuOpen_recent.setObjectName("menuOpen_recent")
+        self.menuOpen_previous = QtGui.QMenu(self.menu_File)
+        self.menuOpen_previous.setObjectName("menuOpen_previous")
         self.menu_Help = QtGui.QMenu(self.menubar)
         self.menu_Help.setObjectName("menu_Help")
         UiFileConverter.setMenuBar(self.menubar)
@@ -108,16 +111,16 @@ class Ui_UiFileConverter(object):
         self.action_Quit = QtGui.QAction(UiFileConverter)
         self.action_Quit.setObjectName("action_Quit")
         self.actionSettings = QtGui.QAction(UiFileConverter)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icons/images/settings_grey_48x48.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionSettings.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/icons/images/settings_grey_48x48.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionSettings.setIcon(icon1)
         self.actionSettings.setObjectName("actionSettings")
         self.action_About = QtGui.QAction(UiFileConverter)
         self.action_About.setObjectName("action_About")
         self.actionEmpty = QtGui.QAction(UiFileConverter)
         self.actionEmpty.setObjectName("actionEmpty")
         self.menu_File.addAction(self.action_Open)
-        self.menu_File.addAction(self.menuOpen_recent.menuAction())
+        self.menu_File.addAction(self.menuOpen_previous.menuAction())
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.actionSettings)
         self.menu_File.addSeparator()
@@ -141,7 +144,7 @@ class Ui_UiFileConverter(object):
         self.repairString_lineEdit.setPlaceholderText(QtGui.QApplication.translate("UiFileConverter", "Leave empty if the resource import does not need patching", None, QtGui.QApplication.UnicodeUTF8))
         self.uiFile_pushButton.setText(QtGui.QApplication.translate("UiFileConverter", "Generate", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_File.setTitle(QtGui.QApplication.translate("UiFileConverter", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpen_recent.setTitle(QtGui.QApplication.translate("UiFileConverter", "Open recent", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuOpen_previous.setTitle(QtGui.QApplication.translate("UiFileConverter", "Open previous", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Help.setTitle(QtGui.QApplication.translate("UiFileConverter", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Open.setText(QtGui.QApplication.translate("UiFileConverter", "&Open", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Quit.setText(QtGui.QApplication.translate("UiFileConverter", "&Quit", None, QtGui.QApplication.UnicodeUTF8))

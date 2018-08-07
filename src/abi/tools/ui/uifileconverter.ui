@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>UI File Generator</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/images/ABILogo_Colour.png</normaloff>:/icons/images/ABILogo_Colour.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -191,13 +195,13 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="menuOpen_recent">
+    <widget class="QMenu" name="menuOpen_previous">
      <property name="title">
-      <string>Open recent</string>
+      <string>Open previous</string>
      </property>
     </widget>
     <addaction name="action_Open"/>
-    <addaction name="menuOpen_recent"/>
+    <addaction name="menuOpen_previous"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>

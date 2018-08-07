@@ -36,6 +36,7 @@ class UiFileConverterDialog(GenerateCommon):
                                           organisation_string, 'uigenerator')
         self._settings.setFallbacksEnabled(False)
         self._load_settings()
+        self._populate_recent_list()
 
         self._make_connections()
         self._initialise_new_src_dir(src_root_dir)
@@ -56,6 +57,7 @@ class UiFileConverterDialog(GenerateCommon):
             relative_file_names = [os.path.relpath(name, src_abs_dir) for name in files]
             self._src_dir_settings.add_file_listings(relative_file_names)
             self._ui.uiFile_comboBox.blockSignals(True)
+            self._ui.uiFile_comboBox.clear()
             self._ui.uiFile_comboBox.addItems(relative_file_names)
             self._ui.uiFile_comboBox.blockSignals(False)
 
