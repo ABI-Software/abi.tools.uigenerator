@@ -126,44 +126,46 @@ class SrcDirSettings(object):
         self._file_listing[self._current_file].set_repair_resource_string(value)
 
     def load(self, settings):
-        settings.beginGroup(self._src_dir)
-        self.set_current_file(settings.value('current_file', ''))
-        if settings.contains('current_index'):
-            settings.remove('current_index')
+        if self._src_dir:
+            settings.beginGroup(self._src_dir)
+            self.set_current_file(settings.value('current_file', ''))
+            if settings.contains('current_index'):
+                settings.remove('current_index')
 
-        size = settings.beginReadArray('file_options')
-        for index in range(size):
-            settings.setArrayIndex(index)
-            file_name = settings.value('file_name', '')
-            file_options = FileOptions(file_name)
-            file_options.set_repair_resource_string(settings.value('repair_resource_string', ''))
-            file_options.set_out_dir(settings.value('out_dir', ''))
-            file_options.set_side_by_side_output(settings.value('side_by_side', 'true') == 'true')
-            self._file_listing[file_name] = file_options
-        settings.endArray()
+            size = settings.beginReadArray('file_options')
+            for index in range(size):
+                settings.setArrayIndex(index)
+                file_name = settings.value('file_name', '')
+                file_options = FileOptions(file_name)
+                file_options.set_repair_resource_string(settings.value('repair_resource_string', ''))
+                file_options.set_out_dir(settings.value('out_dir', ''))
+                file_options.set_side_by_side_output(settings.value('side_by_side', 'true') == 'true')
+                self._file_listing[file_name] = file_options
+            settings.endArray()
 
-        if self._current_file not in self._file_listing:
-            for key in self._file_listing:
-                self._current_file = key
-                break
+            if self._current_file not in self._file_listing:
+                for key in self._file_listing:
+                    self._current_file = key
+                    break
 
-        settings.endGroup()
+            settings.endGroup()
 
     def save(self, settings):
-        settings.beginGroup(self._src_dir)
-        settings.setValue('current_file', self.get_current_file())
+        if self._src_dir:
+            settings.beginGroup(self._src_dir)
+            settings.setValue('current_file', self.get_current_file())
 
-        settings.beginWriteArray('file_options')
-        for index, file_name in enumerate(self._file_listing):
-            file_options = self._file_listing[file_name]
-            settings.setArrayIndex(index)
-            settings.setValue('file_name', file_options.get_file_name())
-            settings.setValue('out_dir', file_options.get_out_dir())
-            settings.setValue('side_by_side', file_options.is_side_by_side_output())
-            settings.setValue('repair_resource_string', file_options.get_repair_resource_string())
-        settings.endArray()
+            settings.beginWriteArray('file_options')
+            for index, file_name in enumerate(self._file_listing):
+                file_options = self._file_listing[file_name]
+                settings.setArrayIndex(index)
+                settings.setValue('file_name', file_options.get_file_name())
+                settings.setValue('out_dir', file_options.get_out_dir())
+                settings.setValue('side_by_side', file_options.is_side_by_side_output())
+                settings.setValue('repair_resource_string', file_options.get_repair_resource_string())
+            settings.endArray()
 
-        settings.endGroup()
+            settings.endGroup()
 
 
 def setup_application(app, app_name):
@@ -175,7 +177,7 @@ def setup_application(app, app_name):
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("src_dir", nargs='?', default=os.getcwd(),
+    parser.add_argument("src_dir", nargs='?', default='',
                         help="the directory to search (recursively) for ui files.")
     parser.add_argument('-v', '--version', action='version',
                         version='%(prog)s {version}'.format(version=__version__))

@@ -34,36 +34,45 @@ class UiFileConverterDialog(GenerateCommon):
         self._settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
                                           organisation_string, 'uigenerator')
         self._settings.setFallbacksEnabled(False)
+        self._load_settings()
 
         self._make_connections()
 
         self._src_dir_settings = SrcDirSettings(src_root_dir)
-        self._load_settings()
-
         self._setup_ui()
         self._update_ui()
 
     def _setup_ui(self):
-        self._src_dir_settings.load(self._settings)
         src_dir = self._src_dir_settings.get_src_dir()
-        files = find_ui_files(src_dir)
-        relative_file_names = [os.path.relpath(name, src_dir) for name in files]
-        self._src_dir_settings.add_file_listings(relative_file_names)
-        self._ui.uiFile_comboBox.blockSignals(True)
-        self._ui.uiFile_comboBox.addItems(relative_file_names)
-        self._ui.uiFile_comboBox.blockSignals(False)
+        if src_dir:
+            src_abs_dir = os.path.realpath(self._src_dir_settings.get_src_dir())
+            os.chdir(src_abs_dir)
+
+            self._src_dir_settings.load(self._settings)
+            files = find_ui_files(src_abs_dir)
+            relative_file_names = [os.path.relpath(name, src_abs_dir) for name in files]
+            self._src_dir_settings.add_file_listings(relative_file_names)
+            self._ui.uiFile_comboBox.blockSignals(True)
+            self._ui.uiFile_comboBox.addItems(relative_file_names)
+            self._ui.uiFile_comboBox.blockSignals(False)
 
     def _update_ui(self):
         current_file_name = self._src_dir_settings.get_current_file()
         if self._ui.uiFile_comboBox.currentText() != current_file_name:
             index_of_current_file = self._ui.uiFile_comboBox.findText(current_file_name)
             self._ui.uiFile_comboBox.setCurrentIndex(index_of_current_file)
-        self._ui.uiFile_pushButton.setEnabled(self._ui.uiFile_comboBox.count() > 0)
-        side_by_side = self._src_dir_settings.is_side_by_side_output()
-        self._ui.sideBySide_groupBox.setChecked(side_by_side)
-        self._update_side_by_side(side_by_side)
-        self._ui.outDir_lineEdit.setText(self._src_dir_settings.get_out_dir())
-        self._update_patch_resources_import()
+
+        ui_files_found = self._ui.uiFile_comboBox.count() > 0
+
+        self._ui.uiFile_pushButton.setEnabled(ui_files_found)
+        self._ui.sideBySide_groupBox.setEnabled(ui_files_found)
+        self._ui.patchResourcesImport_groupBox.setEnabled(ui_files_found)
+        if ui_files_found:
+            side_by_side = self._src_dir_settings.is_side_by_side_output()
+            self._ui.sideBySide_groupBox.setChecked(side_by_side)
+            self._update_side_by_side(side_by_side)
+            self._ui.outDir_lineEdit.setText(self._src_dir_settings.get_out_dir())
+            self._update_patch_resources_import()
 
     def _update_patch_resources_import(self):
         self._ui.patchResourcesImport_groupBox.setEnabled(_includes_resources(self._ui.uiFile_comboBox.currentText()))
@@ -162,10 +171,7 @@ def main():
     setup_application(app, 'uigenerator')
     args = parse_arguments()
 
-    src_root_dir = os.path.realpath(args.src_dir)
-    os.chdir(src_root_dir)
-
-    dialog = UiFileConverterDialog(src_root_dir)
+    dialog = UiFileConverterDialog(args.src_dir)
     dialog.show()
 
     sys.exit(app.exec_())
