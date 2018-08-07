@@ -136,7 +136,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>130</height>
+        <height>142</height>
        </size>
       </property>
      </spacer>
@@ -156,7 +156,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>129</height>
+        <height>141</height>
        </size>
       </property>
      </spacer>
@@ -173,30 +173,6 @@
        <property name="margin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QPushButton" name="settings_pushButton">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/icons/images/settings_grey_48x48.png</normaloff>:/icons/images/settings_grey_48x48.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>457</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </item>
@@ -215,12 +191,26 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuOpen_recent">
+     <property name="title">
+      <string>Open recent</string>
+     </property>
+    </widget>
     <addaction name="action_Open"/>
-    <addaction name="actionOpen_recent"/>
+    <addaction name="menuOpen_recent"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_About"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Open">
@@ -228,14 +218,28 @@
     <string>&amp;Open</string>
    </property>
   </action>
-  <action name="actionOpen_recent">
-   <property name="text">
-    <string>Open recent</string>
-   </property>
-  </action>
   <action name="action_Quit">
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/images/settings_grey_48x48.png</normaloff>:/icons/images/settings_grey_48x48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionEmpty">
+   <property name="text">
+    <string>Empty</string>
    </property>
   </action>
  </widget>

@@ -38,8 +38,10 @@ class UiFileConverterDialog(GenerateCommon):
         self._load_settings()
 
         self._make_connections()
+        self._initialise_new_src_dir(src_root_dir)
 
-        self._src_dir_settings = SrcDirSettings(src_root_dir)
+    def _initialise_new_src_dir(self, src_dir):
+        self._src_dir_settings = SrcDirSettings(src_dir)
         self._setup_ui()
         self._update_ui()
 

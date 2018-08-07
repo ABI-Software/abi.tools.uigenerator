@@ -25,14 +25,28 @@ class GenerateCommon(QtGui.QMainWindow):
     def _load_settings(self):
         self.resize(self._settings.value('size', QtCore.QSize(270, 225)))
         self.move(self._settings.value('pos', QtCore.QPoint(50, 50)))
+        self._previous_location = self._settings.value('previous_location', os.getcwd())
 
     def _save_settings(self):
         self._settings.setValue('size', self.size())
         self._settings.setValue('pos', self.pos())
+        self._settings.setValue('previous_location', self._previous_location)
         self._src_dir_settings.save(self._settings)
 
     def _make_connections(self):
-        self._ui.settings_pushButton.clicked.connect(self._settings_clicked)
+        self._ui.action_About.triggered.connect(self._settings_clicked)
+        self._ui.actionSettings.triggered.connect(self._settings_clicked)
+        self._ui.action_Open.triggered.connect(self._open_location)
+
+    def _populate_recent_list(self):
+        known_locations = self._settings.childGroups()
+
+    def _open_location(self):
+        location = QtGui.QFileDialog.getExistingDirectory(self, 'Select source directory', self._previous_location)
+
+        if location:
+            self._previous_location = location
+            self._initialise_new_src_dir(location)
 
     def _settings_initial_location(self):
         parent_size = self.size()
