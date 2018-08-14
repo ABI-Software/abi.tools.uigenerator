@@ -39,7 +39,10 @@ class UiFileConverterDialog(GenerateCommon):
         self._populate_recent_list()
 
         self._make_connections()
-        self._initialise_new_src_dir(src_root_dir)
+        if src_root_dir:
+            self._initialise_new_src_dir(src_root_dir)
+        else:
+            self._initialise_new_src_dir(self.get_previous_location())
 
     def _initialise_new_src_dir(self, src_dir):
         self._src_dir_settings = SrcDirSettings(src_dir)

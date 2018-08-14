@@ -1,6 +1,6 @@
 from abi.tools.generatesettings import GenerateSettingsDialog
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 import os
 import argparse
@@ -21,6 +21,9 @@ class GenerateCommon(QtGui.QMainWindow):
     def closeEvent(self, event):
         self._save_settings()
         event.accept()
+
+    def get_previous_location(self):
+        return self._settings.value('previous_location')
 
     def _load_settings(self):
         self.resize(self._settings.value('size', QtCore.QSize(270, 225)))
