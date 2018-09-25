@@ -1,6 +1,6 @@
 from abi.tools.generatesettings import GenerateSettingsDialog
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 
 import os
 import argparse
@@ -133,7 +133,10 @@ class SrcDirSettings(object):
         self._current_file = value
 
     def is_side_by_side_output(self):
-        return self._file_listing[self._current_file].is_side_by_side_output()
+        if self._current_file in self._file_listing:
+            return self._file_listing[self._current_file].is_side_by_side_output()
+
+        return True
 
     def set_side_by_side_output(self, value=True):
         self._file_listing[self._current_file].set_side_by_side_output(value)
@@ -145,7 +148,10 @@ class SrcDirSettings(object):
         self._file_listing[self._current_file].set_out_dir(value)
 
     def get_repair_resource_string(self):
-        return self._file_listing[self._current_file].get_repair_resource_string()
+        if self._current_file in self._file_listing:
+            return self._file_listing[self._current_file].get_repair_resource_string()
+
+        return ''
 
     def set_repair_resource_string(self, value):
         self._file_listing[self._current_file].set_repair_resource_string(value)

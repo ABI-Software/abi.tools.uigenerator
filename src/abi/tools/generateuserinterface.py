@@ -1,5 +1,6 @@
 
 import os
+import re
 import sys
 import fnmatch
 import platform
@@ -62,6 +63,7 @@ class UiFileConverterDialog(GenerateCommon):
             self._ui.uiFile_comboBox.blockSignals(True)
             self._ui.uiFile_comboBox.clear()
             self._ui.uiFile_comboBox.addItems(relative_file_names)
+            self._ui.uiFile_comboBox.setCurrentIndex(0)
             self._ui.uiFile_comboBox.blockSignals(False)
 
     def _update_ui(self):
@@ -140,14 +142,30 @@ class UiFileConverterDialog(GenerateCommon):
 
         repair_resource_string = self._src_dir_settings.get_repair_resource_string()
 
+        modified_content = False
+        with open(abs_path_to_out_file, 'r') as f:
+            content = f.read()
+
+        path_detection_regex = re.compile('\n(from [^\\\\/]+([\\\\/]).+ import .+)')
+
+        match = path_detection_regex.search(content)
+        if match:
+            # This is meant to just return the text: 'from suchandsuch/place import thing'
+            # but instead it is returning the whole contents.  This may have undesirable side-effects,
+            # leaving for now as it works but this may need to be revisited.
+            matched_path = match.group(1)
+            matched_path_separator = match.group(2)
+            fixed_path = matched_path.replace(matched_path_separator, '.')
+            content = content.replace(matched_path, fixed_path)
+            modified_content = True
+
         if repair_resource_string:
-            with open(abs_path_to_out_file, 'r') as f:
-                content = f.read()
+            content = content.replace('from . import resources_rc', repair_resource_string)
+            modified_content = True
 
-            modified_content = content.replace('from . import resources_rc', repair_resource_string)
-
+        if modified_content:
             with open(abs_path_to_out_file, 'w') as f:
-                f.write(modified_content)
+                f.write(content)
 
 
 def _includes_resources(file_name):
