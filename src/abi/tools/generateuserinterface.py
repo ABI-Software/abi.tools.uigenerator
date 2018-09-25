@@ -150,7 +150,7 @@ class UiFileConverterDialog(GenerateCommon):
 
         match = path_detection_regex.search(content)
         if match:
-            # This is meant to just return the text: 'from suchandsuch/place import thing'
+            # The first group in the match is just meant to return the text: 'from suchandsuch/place import thing'
             # but instead it is returning the whole contents.  This may have undesirable side-effects,
             # leaving for now as it works but this may need to be revisited.
             matched_path = match.group(1)
