@@ -63,7 +63,7 @@ class UiFileConverterDialog(GenerateCommon):
             self._ui.uiFile_comboBox.blockSignals(True)
             self._ui.uiFile_comboBox.clear()
             self._ui.uiFile_comboBox.addItems(relative_file_names)
-            self._ui.uiFile_comboBox.setCurrentIndex(0)
+            self._src_dir_settings.set_current_file(self._ui.uiFile_comboBox.currentText())
             self._ui.uiFile_comboBox.blockSignals(False)
 
     def _update_ui(self):
